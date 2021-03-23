@@ -1,6 +1,8 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 /** 2. Variables */
@@ -34,6 +36,7 @@ val int = 10
 val long: Long = 10
 
 /** 2.3. Types primitifs */
+
 val texte = "Bonjour"
 val charactere = 'a'
 
@@ -41,20 +44,20 @@ texte.length
 texte.replace("o", "0")
 texte.endsWith("jour")
 
+texte + " Jean !"
+s"$texte Marie !"
+s"${texte.replace("o", "0")} M4r13 !"
+s"Aujourd'hui : $date"
+
 val texteLong =
   """Un texte
-                   très très
-                   long"""
+     très très
+     long"""
 
 val texteLongAligne =
   """Un texte
     |très très
     |long""".stripMargin
-
-texte + " Jean !"
-s"$texte Marie !"
-s"${texte.replace("o", "0")} M4r13 !"
-s"Aujourd'hui : $date"
 
 val octet: Byte = 123 // nombre entier signé de 8 bits
 val court: Short = -12345 // nombre entier signé de 16 bits
@@ -98,6 +101,171 @@ valeurNulle == null
 valeurNulle equals null
 // java.lang.NullPointerException
  */
+
+/** 2.4. Collections */
+/** 2.4.1. Collections immuables */
+/** 2.4.1.1. Seq */
+
+val sequence = Seq(1, 2, 3)
+val sequencePlusSequence = sequence ++ sequence
+sequence diff Seq(2)
+sequence.length
+sequence.isEmpty
+sequence.indexOf(1)
+sequence.indexOf(5)
+sequencePlusSequence.indexOf(2)
+sequencePlusSequence.distinct
+sequence.reverse
+
+val sequenceRemplie = Seq.fill(4)("mot")
+val sequenceRemplieMethode = Seq.fill(3)(Random.nextPrintableChar())
+val sequencePlage = Seq.range(0, 10)
+val sequencePlageDeuxParDeux = Seq.range(0, 10, 2)
+
+/** 2.4.1.2. List */
+
+val list = List(1, 2, 3)
+val elementPlusListe = 0 :: list
+list(2)
+/*
+list(3)
+// java.lang.IndexOutOfBoundsException: 3
+ */
+
+/** 2.4.1.3. Set */
+
+val set = Set(1, 2, 3)
+set(0)
+
+val setAvecDoublon = Set(1, 2, 3, 3, 1, 2)
+set ++ Set(2, 3, 5)
+
+set & Set(2, 3, 5)
+
+/** 2.4.1.4. Map */
+
+val map = Map("A" -> 12, "B" -> 4, "C" -> 4)
+val mapAvecDoublon = Map("A" -> 12, "B" -> 4, "C" -> 4, "A" -> 1)
+map("C")
+/*
+map("D")
+// java.util.NoSuchElementException: key not found: D
+ */
+
+val mapPlusCouple = map + ("D" -> 5)
+val mapPlusCouples = map + ("D" -> 7, "F" -> 10)
+mapPlusCouple ++ mapPlusCouples
+
+/** 2.4.2. Collections mutables */
+/** 2.4.2.1. ArrayBuffer */
+  
+val arrayBuffer = ArrayBuffer(1, 2, 3)
+arrayBuffer += 4
+arrayBuffer += 5 += 6
+
+arrayBuffer ++= List(7, 8)
+arrayBuffer ++= List(9) ++= List(10)
+
+arrayBuffer -= 4
+arrayBuffer -= 5 -= 6
+arrayBuffer -= 0
+
+arrayBuffer --= List(7, 8)
+arrayBuffer --= List(9) --= List(10)
+arrayBuffer --= List(0, 3)
+
+arrayBuffer.append(3)
+arrayBuffer.append(4, 5, 6)
+arrayBuffer
+
+arrayBuffer.remove(4)
+arrayBuffer
+/*
+arrayBuffer.remove(5)
+// java.lang.IndexOutOfBoundsException: 5
+ */
+
+arrayBuffer.remove(3, 2)
+arrayBuffer
+
+/*
+arrayBuffer.remove(3, 1)
+// java.lang.IndexOutOfBoundsException: at 3 deleting 1
+ */
+
+arrayBuffer.prepend(0)
+arrayBuffer.prepend(-4, -3)
+arrayBuffer
+
+arrayBuffer.insert(2, -2, -1)
+arrayBuffer
+
+/*
+arrayBuffer.insert(10, 4, 5, 6)
+// java.lang.IndexOutOfBoundsException: 10
+ */
+
+/** 2.4.2.2. HashSet */
+
+val hashSet = mutable.HashSet('a', 'b', 'c')
+hashSet += 'd'
+hashSet += 'e' += 'f'
+hashSet += 'a'
+
+hashSet ++= List('g', 'h')
+hashSet ++= List('i') ++= List('j')
+hashSet ++= List('a', 'k')
+
+hashSet -= 'd'
+hashSet -= 'e' -= 'f'
+hashSet -= ' '
+
+hashSet --= List('g', 'h')
+hashSet --= List('i') --= List('j')
+hashSet --= List(' ', 'k')
+
+hashSet.remove('c')
+hashSet
+
+hashSet.remove(' ')
+
+/** 2.4.2.3. HashMap */
+
+val hashMap = mutable.HashMap("bleu" -> 4, "vert" -> 9)
+hashMap += ("rouge" -> 2)
+hashMap += ("jaune" -> 3) += ("blanc" -> 6)
+hashMap += ("rouge" -> 10)
+
+hashMap ++= Map("noir" -> 5, "mauve" -> 1)
+hashMap ++= Map("orange" -> 7) ++= Map("rose" -> 0)
+hashMap ++= Map("blanc" -> 8, "marron" -> 1)
+
+hashMap -= "blanc"
+hashMap -= "orange" -= "noir"
+hashMap -= "magenta"
+
+hashMap.remove("mauve")
+hashMap.remove("kaki")
+hashMap
+
+hashMap.update("vert", 8)
+hashMap.update("lavande", 2)
+hashMap
+
+hashMap.put("rose", 7)
+hashMap.put("cyan", 3)
+hashMap
+
+/** 2.3.1. Tuple */
+
+val tuple = (1, "deux", '3', true, List(4))
+tuple._1
+tuple._2
+tuple._3
+tuple._4
+tuple._5
+
+tuple.productIterator.foreach(println)
 
 /** 3. Entrée / Sortie */
 /** 3.1. Écrire dans la console */
@@ -190,7 +358,14 @@ unArg("erreur")
 // unArg("erreur")
 */
 
-unArg (12)
+unArg(12)
+
+/** 5.3. Argument par défaut */
+
+def argumentParDefaut(i: Int, j: Int = 1) = i * j
+
+argumentParDefaut(12, 2)
+argumentParDefaut(12)
 
 /** 6. Classes */
 /** 6.1. Création d'une classe */
@@ -254,15 +429,6 @@ class Devoir(val note: Int) {
 val devoir = new Devoir(12)
 devoir.estimation(10)
 
-devoir.toString
-
-class Telephone(numero: String) {
-  override def toString = numero.grouped(2).toSeq.mkString(" ")
-}
-
-val telephone = new Telephone("0612974028")
-telephone.toString
-
 /** 6.6. Constructeurs d’une classe */
 
 class Article(val contenu: String) {
@@ -280,13 +446,38 @@ article.contenu == articleListe.contenu
 article.contenu == articleCouple.contenu
 
 /** 6.7. Héritage */
+/** 6.7.1. Définition */
 
 class Appartement(lieu: String) extends Maison(1, lieu)
-val appartement = new Appartement("lieu")
+
+val appartement = new Appartement("Lyon")
+appartement.lieu
 appartement.description
 
 appartement.isInstanceOf[Appartement]
 appartement.isInstanceOf[Maison]
+
+val appartementMaison: Maison = appartement
+
+/*
+val maisonAppartement: Appartement = maison
+// found   : Maison
+// required: Appartement
+// val maisonAppartement: Appartement = maison
+ */
+
+/** 6.7.2. Surcharger les méthodes / champs */
+
+class Villa(chambres: Int, lieu: String) extends Maison(chambres, lieu) {
+  override val description: String = s"Villa à $lieu avec $chambres chambres"
+
+  override def toString: String = description
+}
+
+appartement.toString
+
+val villa = new Villa(5, "Montreuil")
+villa.toString
 
 /** 6.8. Visibilité des champs */
 
@@ -320,6 +511,14 @@ class Dictionnaire(titre: String, pages: Int) extends Livre(titre, pages) {
 val dictionnaire = new Dictionnaire("Synonymes", 630)
 dictionnaire.taille
 
+/*
+// SOLUTION EXERCICE 1
+
+class Trilogie(livre1: String, livre2: String, livre3: String, pages: Int) extends Livre(s"$livre1 - $livre2 - $livre3", pages * 3) {
+  override val epaisseur: Int = pages * 30
+}
+ */
+
 /** 7. Objets singletons */
 /** 7.1. Définition */
 
@@ -349,7 +548,7 @@ sqrt(16)
 import Math._
 max(90, 23)*/
 
-case class Carre(longueur: Int) {
+class Carre(longueur: Int) {
   def aire: Double = Carre.calculerAire(longueur)
 }
 
@@ -357,7 +556,7 @@ object Carre {
   private def calculerAire(longueur: Int) = longueur * longueur
 }
 
-val carre = Carre(15)
+val carre = new Carre(15)
 carre.aire
 
 // Carre.calculerAire(15)
@@ -384,4 +583,7 @@ val paragrapheCouple = Paragraphe.apply("Titre", "Texte")
 val Paragraphe(titreExtrait, texteExtrait) = paragrapheCouple
 
 val paragrapheSansTitre = new Paragraphe("Texte")
+/*
 val Paragraphe(titre2, texte2) = paragrapheSansTitre
+// scala.MatchError: Texte (of class Paragraphe)
+ */
