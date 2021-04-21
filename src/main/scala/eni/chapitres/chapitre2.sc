@@ -158,7 +158,7 @@ mapPlusCouple ++ mapPlusCouples
 
 /** 2.4.2. Collections mutables */
 /** 2.4.2.1. ArrayBuffer */
-  
+
 val arrayBuffer = ArrayBuffer(1, 2, 3)
 arrayBuffer += 4
 arrayBuffer += 5 += 6
@@ -445,8 +445,8 @@ article.contenu
 article.contenu == articleListe.contenu
 article.contenu == articleCouple.contenu
 
-/** 6.7. Héritage */
-/** 6.7.1. Définition */
+/** 7. Héritage */
+/** 7.1. Définition */
 
 class Appartement(lieu: String) extends Maison(1, lieu)
 
@@ -466,20 +466,7 @@ val maisonAppartement: Appartement = maison
 // val maisonAppartement: Appartement = maison
  */
 
-/** 6.7.2. Surcharger les méthodes / champs */
-
-class Villa(chambres: Int, lieu: String) extends Maison(chambres, lieu) {
-  override val description: String = s"Villa à $lieu avec $chambres chambres"
-
-  override def toString: String = description
-}
-
-appartement.toString
-
-val villa = new Villa(5, "Montreuil")
-villa.toString
-
-/** 6.8. Visibilité des champs */
+/** 7.2. Champs / méthodes protected */
 
 class Livre(titre: String, pages: Int) {
   private val couverture = s"- $titre -"
@@ -519,8 +506,37 @@ class Trilogie(livre1: String, livre2: String, livre3: String, pages: Int) exten
 }
  */
 
-/** 7. Objets singletons */
-/** 7.1. Définition */
+/** 7.3. Surcharger les méthodes / champs */
+
+class Villa(chambres: Int, lieu: String) extends Maison(chambres, lieu) {
+  override val description: String = s"Villa à $lieu avec $chambres chambres"
+
+  override def toString: String = description
+}
+
+appartement.toString
+
+val villa = new Villa(5, "Montreuil")
+villa.toString
+
+/** 7.4. Surcharger les méthodes / champs */
+
+class Chalet(chambres: Int, lieu: String) extends Maison(chambres, lieu) {
+  override final val description: String = s"Chalet à $lieu avec $chambres chambres"
+
+  final def prix(metres: Int): Int = 1000 * metres * chambres
+}
+
+/*
+class GrandChalet(chambres: Int, lieu: String) extends Chalet(chambres, lieu) {
+  override def prix(metres: Int): Int = 2000 * metres * chambres
+}
+// overriding method prix in class Chalet of type (metres: Int)Int;
+// method prix cannot override final member
+ */
+
+/** 8. Objets singletons */
+/** 8.1. Définition */
 
 object Compteur {
   val nom = "COMPTEUR"

@@ -1,4 +1,4 @@
-package eni
+package eni.exemples
 
 import org.scalatest.funspec.AnyFunSpec
 
@@ -25,15 +25,20 @@ class FunSpecTest extends AnyFunSpec {
   }
 
   describe("Opérations basiques") {
-    it("Accéder à un élément d'une liste vide renvoie une exception") {
-      val exception = intercept[NoSuchElementException] {
-        Seq().head
+    describe("Accéder à un élément d'une liste vide") {
+      it("renvoie une exception") {
+        val exception = intercept[NoSuchElementException] {
+          Seq().head
+        }
+        assert(exception.getMessage == "head of empty list")
       }
-      assert(exception.getMessage == "head of empty list")
     }
 
-    ignore("Un plus un égal trois") {
-      assert(1 + 1 === 3)
+    ignore("Un plus un") {
+      it("est égal à trois") {
+        assert(1 + 1 === 3)
+      }
     }
   }
 }
+

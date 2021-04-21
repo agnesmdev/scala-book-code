@@ -13,6 +13,9 @@ version := "1.0.0"
 /** Dépôt de librairies Scala ou Java */
 resolvers += Resolver.bintrayRepo("tmacedo", "maven")
 
+/** Déclaration de variable locale */
+val AkkaHttpVersion = "10.1.3"
+
 /** Dépendances vers des libraires Scala ou Java */
 libraryDependencies ++= Seq(
   /** Dépendance dans les classes de production dépendante de la version de Scala */
@@ -26,6 +29,14 @@ libraryDependencies ++= Seq(
 
   /** Dépendance pour les tests (deprecated) */
   "org.scalactic" %% "scalactic" % "3.0.8",
+
+  /** Dépendances Akka pour créer une API */
+  "com.typesafe.akka" %% "akka-actor" % "2.5.13",
+  "com.typesafe.akka" %% "akka-stream" % "2.5.13",
+  "com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
+
+  /** Dépendances Spray pour gérer les JSON */
+  "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion,
 
   /** Dépendances dans les classes de tests */
   "org.scalatest" %% "scalatest" % "3.2.2" % Test

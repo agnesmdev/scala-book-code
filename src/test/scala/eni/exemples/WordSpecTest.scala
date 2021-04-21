@@ -1,11 +1,11 @@
-package eni
+package eni.exemples
 
 import org.scalatest.wordspec.AnyWordSpec
 
 class WordSpecTest extends AnyWordSpec {
 
-  "Le texte" can {
-    "'Exemple'" should {
+  "Un texte" when {
+    "égal à 'Exemple'" must {
       val exemple = "Exemple"
 
       "contenir le mot 'Ex'" in {
@@ -18,8 +18,8 @@ class WordSpecTest extends AnyWordSpec {
     }
   }
 
-  "Opérations basiques" can {
-    "Diviser par zéro" should {
+  "Opérations basiques" when {
+    "Diviser par zéro" must {
       "renvoyer une exception" in {
         assertThrows[ArithmeticException] {
           1 / 0
@@ -36,8 +36,10 @@ class WordSpecTest extends AnyWordSpec {
       }
     }
 
-    "Un plus un" should {
-      "être égal à trois" ignore {
+    val equal = afterWord("être égal à")
+
+    "Un plus un" should equal {
+      "trois" ignore {
         assert(1 + 1 === 3)
       }
     }

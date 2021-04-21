@@ -1,4 +1,4 @@
-package eni
+package eni.exemples
 
 import org.scalatest.freespec.AnyFreeSpec
 

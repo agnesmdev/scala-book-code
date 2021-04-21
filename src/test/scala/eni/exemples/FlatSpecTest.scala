@@ -1,8 +1,15 @@
-package eni
+package eni.exemples
 
 import org.scalatest.flatspec.AnyFlatSpec
 
 class FlatSpecTest extends AnyFlatSpec {
+
+  it should "Accéder à un élément d'une liste vide renvoie une exception" in {
+    val exception = intercept[NoSuchElementException] {
+      Seq().head
+    }
+    assert(exception.getMessage == "head of empty list")
+  }
 
   behavior of "Le texte 'Exemple'"
   val exemple = "Exemple"
@@ -22,13 +29,6 @@ class FlatSpecTest extends AnyFlatSpec {
   }
 
   behavior of "Opérations basiques"
-
-  it should "Accéder à un élément d'une liste vide renvoie une exception" in {
-    val exception = intercept[NoSuchElementException] {
-      Seq().head
-    }
-    assert(exception.getMessage == "head of empty list")
-  }
 
   ignore should "Un plus un égal trois" in {
     assert(1 + 1 == 3)
