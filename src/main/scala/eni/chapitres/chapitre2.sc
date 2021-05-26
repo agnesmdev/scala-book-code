@@ -103,26 +103,27 @@ valeurNulle equals null
  */
 
 /** 2.4. Collections */
-/** 2.4.1. Collections immuables */
-/** 2.4.1.1. Seq */
+/** 2.4.2. Seq */
 
 val sequence = Seq(1, 2, 3)
 val sequencePlusSequence = sequence ++ sequence
 sequence diff Seq(2)
-sequence.length
-sequence.isEmpty
-sequence.indexOf(1)
-sequence.indexOf(5)
-sequencePlusSequence.indexOf(2)
 sequencePlusSequence.distinct
 sequence.reverse
+
+sequence.take(2)
+sequence.take(5)
+sequence.drop(1)
+sequence.drop(4)
+sequence.dropRight(2)
+sequence.dropRight(6)
 
 val sequenceRemplie = Seq.fill(4)("mot")
 val sequenceRemplieMethode = Seq.fill(3)(Random.nextPrintableChar())
 val sequencePlage = Seq.range(0, 10)
 val sequencePlageDeuxParDeux = Seq.range(0, 10, 2)
 
-/** 2.4.1.2. List */
+/** 2.4.3. List */
 
 val list = List(1, 2, 3)
 val elementPlusListe = 0 :: list
@@ -132,7 +133,11 @@ list(3)
 // java.lang.IndexOutOfBoundsException: 3
  */
 
-/** 2.4.1.3. Set */
+/** 2.4.4. Vector */
+
+val vecteur = Vector(1, 2, 3)
+
+/** 2.4.5. Set */
 
 val set = Set(1, 2, 3)
 set(0)
@@ -142,7 +147,7 @@ set ++ Set(2, 3, 5)
 
 set & Set(2, 3, 5)
 
-/** 2.4.1.4. Map */
+/** 2.4.6. Map */
 
 val map = Map("A" -> 12, "B" -> 4, "C" -> 4)
 val mapAvecDoublon = Map("A" -> 12, "B" -> 4, "C" -> 4, "A" -> 1)
@@ -156,8 +161,7 @@ val mapPlusCouple = map + ("D" -> 5)
 val mapPlusCouples = map + ("D" -> 7, "F" -> 10)
 mapPlusCouple ++ mapPlusCouples
 
-/** 2.4.2. Collections mutables */
-/** 2.4.2.1. ArrayBuffer */
+/** 2.4.7. ArrayBuffer */
 
 val arrayBuffer = ArrayBuffer(1, 2, 3)
 arrayBuffer += 4
@@ -205,7 +209,7 @@ arrayBuffer.insert(10, 4, 5, 6)
 // java.lang.IndexOutOfBoundsException: 10
  */
 
-/** 2.4.2.2. HashSet */
+/** 2.4.8. HashSet */
 
 val hashSet = mutable.HashSet('a', 'b', 'c')
 hashSet += 'd'
@@ -229,7 +233,7 @@ hashSet
 
 hashSet.remove(' ')
 
-/** 2.4.2.3. HashMap */
+/** 2.4.9. HashMap */
 
 val hashMap = mutable.HashMap("bleu" -> 4, "vert" -> 9)
 hashMap += ("rouge" -> 2)
@@ -256,7 +260,27 @@ hashMap.put("rose", 7)
 hashMap.put("cyan", 3)
 hashMap
 
-/** 2.3.1. Tuple */
+/** 2.4.10. Fonctions communes */
+
+sequence.length
+sequence.isEmpty
+
+sequence.contains(1)
+sequence.contains(5)
+sequence.contains("un")
+
+sequence.indexOf(1)
+sequence.indexOf(5)
+sequencePlusSequence.indexOf(2)
+
+val collectionVide = Nil
+collectionVide.isEmpty
+collectionVide.length
+
+collectionVide.contains(1)
+collectionVide.indexOf(2)
+
+/** 2.4.11. Tuple */
 
 val tuple = (1, "deux", '3', true, List(4))
 tuple._1
