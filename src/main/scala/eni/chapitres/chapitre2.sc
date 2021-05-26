@@ -100,6 +100,7 @@ valeurNulle == null
 /*
 valeurNulle equals null
 // java.lang.NullPointerException
+  ... 37 elided
  */
 
 /** 2.4. Collections */
@@ -125,13 +126,13 @@ val sequencePlageDeuxParDeux = Seq.range(0, 10, 2)
 
 /** 2.4.3. List */
 
-val list = List(1, 2, 3)
-val elementPlusListe = 0 :: list
-list(2)
-/*
-list(3)
-// java.lang.IndexOutOfBoundsException: 3
- */
+val liste = List(1, 2, 3)
+val elementPlusListe = 0 :: liste
+val listePlusListe = liste ::: liste
+
+/** 2.4.1.2. Vector */
+
+val vecteur = Vector(1, 2, 3)
 
 /** 2.4.4. Vector */
 
@@ -144,18 +145,27 @@ set(0)
 
 val setAvecDoublon = Set(1, 2, 3, 3, 1, 2)
 set ++ Set(2, 3, 5)
-
 set & Set(2, 3, 5)
 
 /** 2.4.6. Map */
 
 val map = Map("A" -> 12, "B" -> 4, "C" -> 4)
 val mapAvecDoublon = Map("A" -> 12, "B" -> 4, "C" -> 4, "A" -> 1)
+val mapVide = Map.empty[String, Int]
+
 map("C")
 /*
 map("D")
 // java.util.NoSuchElementException: key not found: D
  */
+
+map.get("C")
+map.get("D")
+map.getOrElse("D", -1)
+map.contains("A")
+
+map.keys
+map.values
 
 val mapPlusCouple = map + ("D" -> 5)
 val mapPlusCouples = map + ("D" -> 7, "F" -> 10)
@@ -261,6 +271,16 @@ hashMap.put("cyan", 3)
 hashMap
 
 /** 2.4.10. Fonctions communes */
+
+sequence(2)
+/*
+sequence(3)
+java.lang.IndexOutOfBoundsException: 3
+  at scala.collection.LinearSeqOptimized.apply(LinearSeqOptimized.scala:67)
+  at scala.collection.LinearSeqOptimized.apply$(LinearSeqOptimized.scala:65)
+  at scala.collection.immutable.List.apply(List.scala:89)
+  ... 37 elided
+ */
 
 sequence.length
 sequence.isEmpty

@@ -1,3 +1,4 @@
+import java.time.LocalDate
 import java.util.concurrent.Executors
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -10,6 +11,7 @@ val fonctionUnArg = (i: Int) => i * 1.2
 val fonctionDeuxArg = (i: Int, j: Double) => i * j
 val fonctionDeuxArgDecimal: (Int, Double) => BigDecimal = (i: Int, j: Double) => i * j
 val fonctionSansArg = () => println("Bonjour")
+val fonctionUnArgSansDef: Int => Double = _ * 1.2
 
 /** 1.2. Multi-lignes */
 
@@ -363,6 +365,7 @@ optionDefinie.get
 None.get
 // java.util.NoSuchElementException: None.get
  */
+None.getOrElse("défaut")
 
 /** 7.2. Pattern matching */
 
@@ -383,7 +386,11 @@ def demoOptionType(valeur: Any) = valeur match {
 demoOptionType(Some(34))
 demoOptionType(Some("Lorem Ipsum"))
 
-/** 7.3. Bonnes pratiques */
+/** 7.3. Méthodes utilitaires */
+
+optionDefinie.getOrElse()
+
+/** 7.4. Bonnes pratiques */
 
 val valeurNulle: String = null
 val optionNulle = Option(valeurNulle)
@@ -393,34 +400,6 @@ val optionNulle = Option(valeurNulle)
 val nombres = Seq(2, 3, 5, 8, 13, 21)
 val singleton = Seq(65)
 val listeVide: Seq[Int] = Nil
-
-/** 8.1. map */
-
-nombres.map(_ * 2)
-nombres.map(_.toString)
-listeVide.map(_.toString)
-
-/** 8.2. exists */
-
-nombres.exists(_ < 10)
-listeVide.exists(_ < 10)
-
-/** 8.3. filter */
-
-nombres.filter(_ < 10)
-nombres.filter(_ > 30)
-listeVide.filter(_ > 30)
-
-/** 8.4. foreach */
-
-nombres.foreach(print(_))
-listeVide.foreach(print(_))
-
-/** 8.5. mkString */
-
-nombres.mkString(" - ")
-singleton.mkString(" - ")
-listeVide.mkString
 
 /** 8.6. head */
 
@@ -450,26 +429,144 @@ def queue(sequence: Seq[Any]) = sequence match {
 queue(nombres)
 queue(Nil)
 
-/** 8.8. take / takeWhite */
+/** 8.1. map */
 
-nombres.take(2)
-nombres.take(10)
-listeVide.take(2)
+nombres.map(_ * 2)
+nombres.map(_.toString)
+listeVide.map(_.toString)
+
+/** 8.1. flatMap */
+
+def diviseurs(nombre: Int): Seq[Int] = {
+  (2 until nombre).filter(i => nombre % i == 0)
+}
+val diviseursNombres = nombres.map(diviseurs)
+nombres.flatMap(diviseurs)
+
+diviseursNombres.flatten
+
+/** 8.2. exists */
+
+nombres.exists(_ < 5)
+listeVide.exists(_ < 5)
+
+/** 8.4. forall */
+
+nombres.forall(_ < 5)
+listeVide.forall(_ < 5)
+
+/** 8.3. filter */
+
+nombres.filter(_ < 10)
+nombres.filter(_ > 30)
+listeVide.filter(_ > 30)
+
+/** 8.4. collect */
+
+nombres.collect {
+  case nombre if nombre < 10 => nombre * 1.5
+  case nombre if nombre > 20 => nombre / 2
+}
+
+/** 8.4. fold */
+
+nombres.fold(0) {
+  case (resultat, nombre) if nombre % 2 == 0 => resultat + nombre
+  case (resultat, _) => resultat
+}
+
+/** 8.4. foldLeft / foldRight */
+
+nombres.foldLeft("") {
+  case (resultat, nombre) if nombre % 2 == 1 => resultat ++ nombre.toString
+  case (resultat, _) => resultat
+}
+
+nombres.foldRight("") {
+  case (nombre, resultat) if nombre % 2 == 1 => resultat ++ nombre.toString
+  case (_, resultat) => resultat
+}
+
+nombres.reverse.foldRight("") {
+  case (nombre, resultat) if nombre % 2 == 1 => resultat ++ nombre.toString
+  case (_, resultat) => resultat
+}
+
+/** 8.4. foreach */
+
+nombres.foreach(print(_))
+listeVide.foreach(print(_))
+
+/** 8.5. mkString */
+
+nombres.mkString(" - ")
+singleton.mkString(" - ")
+nombres.mkString("(", " - ", ")")
+listeVide.mkString("(", " - ", ")")
+nombres.mkString
+listeVide.mkString
+
+/** 8.6. sum */
+
+nombres.sum
+
+/** 8.8. takeWhite */
 
 nombres.takeWhile(_ % 2 == 0)
 nombres.takeWhile(_ % 3 == 0)
 listeVide.takeWhile(_ % 3 == 0)
 
-/*
-// SOLUTION EXERCICE 3
+/** 8.9. dropWhile */
 
-def transforme(l: Seq[Int]): String = {
-  l.filter(_ > 0).take(6).map(_ / 5).takeWhile(_ < 1) match {
-    case Seq(_) => "UN"
-    case l => l.length.toString
-  }
-}
+nombres.dropWhile(_ % 2 == 0)
+nombres.dropWhile(_ % 3 == 0)
+listeVide.dropWhile(_ % 3 == 0)
+
+/** 8.10. sorted */
+
+val mots = List("crayon", "livre", "coquelicot", "ane", "joue")
+mots.sorted
+nombres.sorted
+
+val dates = List(
+  LocalDate.parse("2020-03-01"),
+  LocalDate.parse("1993-09-29"),
+  LocalDate.parse("2021-05-12")
+)
+/*
+dates.sorted
+// No implicit Ordering defined for java.time.LocalDate.
+// dates.sorted
  */
+implicit val ordreDate: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+dates.sorted
+
+/** 8.10. sortBy */
+
+mots.sortBy(_.length)
+dates.sortBy(_.toEpochDay)
+
+/** 8.10. sortWith */
+
+mots.sortWith((mot1, mot2) => mot1.last > mot2.last)
+
+/** 8.10. zipWithIndex */
+
+val motsIndexes = mots.zipWithIndex
+motsIndexes.map {
+  case (mot, index) if index % 2 == 0 => mot.reverse
+  case (mot, _) => mot
+}
+
+/** 8.10. grouped */
+
+val motsGroupes = mots.grouped(2)
+motsGroupes.toList
+mots.grouped(6).toList
+
+/** 8.10. groupBy */
+
+mots.groupBy(_.length)
 
 /** 9. Gestion des erreurs */
 /** 9.1. try / catch / finally */
