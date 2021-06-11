@@ -1,6 +1,8 @@
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
+import java.time._
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.time.temporal.ChronoUnit
+import java.util.{Calendar, Date, Locale}
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
@@ -17,25 +19,44 @@ jour = "Mardi"
 var jourMutable = "Lundi"
 jourMutable = "Mardi"
 
+/** 2.2. Variable lazy */
+
 lazy val mot = "Aujourd'hui"
 mot
 
-lazy val date = LocalDateTime.now()
+lazy val dateCourante = System.currentTimeMillis()
 val langueLocale = Locale.getDefault.getLanguage
-val bonjourNom = if (langueLocale == "fr") {
-  "Aujourd'hui : " + date.format(DateTimeFormatter.ofPattern("DD-MM-YYYY HH:mm"))
+val dateActuelle = if (langueLocale == "fr") {
+  "Temps actuel : " + dateCourante
 } else if (langueLocale == "en") {
-  "Today: " + date.format(DateTimeFormatter.ofPattern("YYYY-MM-DD h:mm a"))
+  "Current time: " + dateCourante
 } else {
   "Langage inconnu"
 }
 
-/** 2.2. Type d'une variable */
+/** 2.3. Type d'une variable */
 
 val int = 10
 val long: Long = 10
 
-/** 2.3. Types primitifs */
+/** 2.4. Structure des types */
+
+val phraseJava = new String("Comment vas-tu ?")
+val memePhraseJava = new String("Comment vas-tu ?")
+
+phraseJava == memePhraseJava
+phraseJava equals memePhraseJava
+phraseJava eq memePhraseJava
+
+val valeurNulle: String = null
+valeurNulle == null
+
+/*
+valeurNulle equals null
+// java.lang.NullPointerException
+ */
+
+/** 2.5. Chaîne de caractères */
 
 val texte = "Bonjour"
 val charactere = 'a'
@@ -44,10 +65,14 @@ texte.length
 texte.replace("o", "0")
 texte.endsWith("jour")
 
+/** 2.5.1. Interpolation de String */
+
 texte + " Jean !"
 s"$texte Marie !"
 s"${texte.replace("o", "0")} M4r13 !"
-s"Aujourd'hui : $date"
+s"Date courante : $dateCourante"
+
+/** 2.5.2. Multi-lignes */
 
 val texteLong =
   """Un texte
@@ -59,6 +84,9 @@ val texteLongAligne =
     |très très
     |long""".stripMargin
 
+/** 2.6. Valeurs numériques */
+/** 2.6.1. Types */
+
 val octet: Byte = 123 // nombre entier signé de 8 bits
 val court: Short = -12345 // nombre entier signé de 16 bits
 val entier: Int = 123456789 // nombre entier signé de 32 bits
@@ -68,6 +96,58 @@ val double: Double = -12345.6789 // nombre décimal signé de 64 bits
 
 val grandEntier = BigInt(entierLong)
 val grandDecimal = BigDecimal(double)
+
+val entierParDefaut = 12
+val decimalParDefaut = 123.45
+
+/** 2.6.2. Opérations basiques */
+
+12 + 89.5
+198 - 65
+25 * 5
+val divisionEuclidienne = 15 / 10
+val division = 5.0 / 3
+
+import scala.math.BigDecimal.RoundingMode._
+BigDecimal(division).setScale(2, UP)
+BigDecimal(division).setScale(2, DOWN)
+BigDecimal(division).setScale(2, FLOOR)
+BigDecimal(division).setScale(2, CEILING)
+BigDecimal(division).setScale(2, HALF_UP)
+BigDecimal(division).setScale(2, HALF_DOWN)
+BigDecimal(division).setScale(2, HALF_EVEN)
+
+/*
+BigDecimal(division).setScale(2, UNNECESSARY)
+// java.lang.ArithmeticException: Rounding necessary
+ */
+
+val divisionMoitie = -155.5 / 10
+BigDecimal(divisionMoitie).setScale(1, UP)
+BigDecimal(divisionMoitie).setScale(1, DOWN)
+BigDecimal(divisionMoitie).setScale(1, FLOOR)
+BigDecimal(divisionMoitie).setScale(1, CEILING)
+BigDecimal(divisionMoitie).setScale(1, HALF_UP)
+BigDecimal(divisionMoitie).setScale(1, HALF_DOWN)
+BigDecimal(divisionMoitie).setScale(1, HALF_EVEN)
+
+/*
+45 / 0
+java.lang.ArithmeticException: / by zero
+ */
+
+/** 2.6.3. Opérations mathématiques */
+
+Math.abs(-456)
+Math.max(123, 45)
+Math.min(98, 145)
+Math.pow(2, 4)
+Math.round(12.5)
+Math.round(12.3)
+Math.sqrt(4)
+Math.sqrt(5)
+
+/** 2.6.4. Conversion */
 
 octet.toShort
 court.toInt
@@ -80,8 +160,13 @@ grandDecimal.toInt
 entier.toShort
 grandEntier.toShort
 
-val entierParDefaut = 12
-val decimalParDefaut = 123.45
+octet.toString
+court.toString
+entier.toString
+entierLong.toString
+flottant.toString
+
+/** 2.7. Boolean */
 
 val bonneReponse = true
 val mauvaiseReponse = false
@@ -103,8 +188,152 @@ valeurNulle equals null
   ... 37 elided
  */
 
-/** 2.4. Collections */
-/** 2.4.2. Seq */
+/** 2.8. Éléments temporels */
+/** 2.8.1. Period */
+
+val periode = Period.of(2, 5, 27)
+s"""${periode.getYears} années,
+   |${periode.getMonths} mois,
+   |${periode.getDays} jours"""
+
+periode.get(ChronoUnit.DAYS)
+
+val periodeFuture = periode.plusDays(6)
+periode.plus(periodeFuture)
+
+val periodePassee = periode.minusYears(2)
+periode.minus(periodePassee)
+
+/** 2.8.2. Duration */
+
+val duree = Duration.of(10192927, ChronoUnit.MILLIS)
+s"""${duree.getSeconds} secondes,
+   |${duree.getNano} nanosecondes"""
+s"""${duree.toHours} heures ou
+   |${duree.toMinutes} minutes"""
+
+val dureeFuture = duree.plusDays(2)
+duree.plus(1, ChronoUnit.HOURS)
+duree.plus(dureeFuture)
+
+val dureePassee = duree.minusMillis(252)
+duree.minus(3, ChronoUnit.MINUTES)
+duree.minus(dureePassee)
+
+/** 2.8.3. Date */
+
+val date = new Date()
+val calendrier = Calendar.getInstance()
+calendrier.getTime
+
+calendrier.set(2021, 9, 13, 15, 38, 15)
+val dateCalendrier = calendrier.getTime
+
+calendrier.set(Calendar.MINUTE, 56)
+val dateMillisecondes = calendrier.getTime
+
+calendrier.add(Calendar.HOUR, 2)
+val dateAjoutee = calendrier.getTime
+
+dateAjoutee.after(date)
+dateCalendrier.before(date)
+
+val formateurDate = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss")
+formateurDate.format(date)
+
+val dateParsee = formateurDate.parse("1993-08-12 08:45:30")
+
+/*
+formatDate.parse("1993-08-12 08-45-30")
+// java.text.ParseException: Unparseable date: "1993-08-12 08-45-30"
+ */
+
+/** 2.8.4. LocalDate */
+
+val dateLocale = LocalDate.now()
+val zoneParDefaut = ZoneId.systemDefault()
+LocalDate.now(zoneParDefaut)
+
+val dateLocaleAvecZone = LocalDate.now(ZoneId.of("GMT+9"))
+ZoneId.getAvailableZoneIds
+
+dateLocale.plusDays(3)
+dateLocale.plus(2, ChronoUnit.MONTHS)
+
+dateLocale.minusDays(7)
+dateLocale.minus(1, ChronoUnit.YEARS)
+
+val dateLocaleAjoutee = dateLocale
+  .plusYears(3)
+  .plusMonths(9)
+  .plusDays(2)
+dateLocale.plus(periode)
+
+val periodeEntreDates = Period.between(dateLocale, dateLocaleAjoutee)
+s"${periodeEntreDates.getYears} années, ${periodeEntreDates.getMonths} mois, ${periodeEntreDates.getDays} jours"
+
+dateLocale.isAfter(dateLocaleAjoutee)
+dateLocale.isBefore(dateLocaleAjoutee)
+
+val formateurDateLocale = DateTimeFormatter.ofPattern("yyyy MM dd")
+dateLocale.format(formateurDateLocale)
+dateLocale.format(DateTimeFormatter.ISO_DATE)
+
+LocalDate.parse("2010-12-25")
+/*
+LocalDate.parse("2015 01 27")
+// java.time.format.DateTimeParseException: Text '2015 01 27' could not be parsed at index 4
+ */
+
+/*
+LocalDate.parse("1998 11 23 12:08:34")
+// java.time.format.DateTimeParseException: Text '1998 11 23 12:08:34' could not be parsed, unparsed text found at index 10
+ */
+
+LocalDate.parse("2015 01 27", formateurDateLocale)
+
+/** 2.8.5. LocalDateTime */
+
+val dateTempsLocale = LocalDateTime.now()
+val dateTempsLocalAvecZone = LocalDateTime.now(ZoneId.of("GMT+9"))
+
+dateTempsLocale.plusHours(7)
+dateTempsLocale.plus(2, ChronoUnit.SECONDS)
+
+dateTempsLocale.minusNanos(745000)
+dateTempsLocale.minus(1, ChronoUnit.MINUTES)
+
+val dateTempsLocaleAjoutee = dateTempsLocale
+  .plusHours(5)
+  .plusMinutes(35)
+  .plusSeconds(50)
+dateTempsLocale.plus(duree)
+dateTempsLocale.plus(periode)
+
+val dureeEntreDatesTemps = Duration.between(dateTempsLocale, dateTempsLocaleAjoutee)
+
+dateTempsLocale.isAfter(dateTempsLocaleAjoutee)
+dateTempsLocale.isBefore(dateTempsLocaleAjoutee)
+
+val formateurDateTempsLocale = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+dateTempsLocale.format(formateurDateTempsLocale)
+dateTempsLocale.format(DateTimeFormatter.ISO_DATE_TIME)
+
+LocalDateTime.parse("2010-12-25T15:35:45")
+/*
+LocalDateTime.parse("2015 01 27 08:23:00")
+// java.time.format.DateTimeParseException: Text '2015 01 27 08:23:00' could not be parsed at index 4
+ */
+
+/*
+LocalDateTime.parse("1998-11-23")
+// java.time.format.DateTimeParseException: Text '1998-11-23' could not be parsed, unparsed text found at index 10
+ */
+
+LocalDateTime.parse("2021/06/07 02:36:41", formateurDateTempsLocale)
+
+/** 2.9. Collections */
+/** 2.9.2. Seq */
 
 val sequence = Seq(1, 2, 3)
 val sequencePlusSequence = sequence ++ sequence
@@ -124,21 +353,17 @@ val sequenceRemplieMethode = Seq.fill(3)(Random.nextPrintableChar())
 val sequencePlage = Seq.range(0, 10)
 val sequencePlageDeuxParDeux = Seq.range(0, 10, 2)
 
-/** 2.4.3. List */
+/** 2.9.3. List */
 
 val liste = List(1, 2, 3)
 val elementPlusListe = 0 :: liste
 val listePlusListe = liste ::: liste
 
-/** 2.4.1.2. Vector */
+/** 2.9.4. Vector */
 
 val vecteur = Vector(1, 2, 3)
 
-/** 2.4.4. Vector */
-
-val vecteur = Vector(1, 2, 3)
-
-/** 2.4.5. Set */
+/** 2.9.5. Set */
 
 val set = Set(1, 2, 3)
 set(0)
@@ -147,7 +372,7 @@ val setAvecDoublon = Set(1, 2, 3, 3, 1, 2)
 set ++ Set(2, 3, 5)
 set & Set(2, 3, 5)
 
-/** 2.4.6. Map */
+/** 2.9.6. Map */
 
 val map = Map("A" -> 12, "B" -> 4, "C" -> 4)
 val mapAvecDoublon = Map("A" -> 12, "B" -> 4, "C" -> 4, "A" -> 1)
@@ -171,7 +396,7 @@ val mapPlusCouple = map + ("D" -> 5)
 val mapPlusCouples = map + ("D" -> 7, "F" -> 10)
 mapPlusCouple ++ mapPlusCouples
 
-/** 2.4.7. ArrayBuffer */
+/** 2.9.7. ArrayBuffer */
 
 val arrayBuffer = ArrayBuffer(1, 2, 3)
 arrayBuffer += 4
@@ -219,7 +444,7 @@ arrayBuffer.insert(10, 4, 5, 6)
 // java.lang.IndexOutOfBoundsException: 10
  */
 
-/** 2.4.8. HashSet */
+/** 2.9.8. HashSet */
 
 val hashSet = mutable.HashSet('a', 'b', 'c')
 hashSet += 'd'
@@ -243,7 +468,7 @@ hashSet
 
 hashSet.remove(' ')
 
-/** 2.4.9. HashMap */
+/** 2.9.9. HashMap */
 
 val hashMap = mutable.HashMap("bleu" -> 4, "vert" -> 9)
 hashMap += ("rouge" -> 2)
@@ -270,7 +495,7 @@ hashMap.put("rose", 7)
 hashMap.put("cyan", 3)
 hashMap
 
-/** 2.4.10. Fonctions communes */
+/** 2.9.10. Fonctions communes */
 
 sequence(2)
 /*
@@ -300,7 +525,7 @@ collectionVide.length
 collectionVide.contains(1)
 collectionVide.indexOf(2)
 
-/** 2.4.11. Tuple */
+/** 2.9.11. Tuple */
 
 val tuple = (1, "deux", '3', true, List(4))
 tuple._1
@@ -317,6 +542,13 @@ tuple.productIterator.foreach(println)
 print("Ceci est : ")
 System.out.println("Message d'information")
 System.err.println("Message d'erreur")
+
+println(
+  s"""${Console.BOLD}Texte gras
+     |${Console.BLACK}et bleu
+     |${Console.BLUE_B}avec un fond bleu
+     |${Console.UNDERLINED}et souligné.
+     |${Console.RESET}Retour à la normale.""".stripMargin)
 
 /** 4. Structures de contrôle */
 /** 4.1. if/else */
