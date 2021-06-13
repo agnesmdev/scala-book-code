@@ -1,7 +1,6 @@
 package eni.services.impl
 
 import eni.exceptions.{MonnaieInsuffisanteException, ProduitIndisponibleException}
-import eni.modeles.Produit
 import eni.modeles.machine.{EtatProduit, Produit}
 import eni.services.IProduitService
 

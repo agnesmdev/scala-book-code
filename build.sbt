@@ -14,8 +14,8 @@ version := "1.0.0"
 resolvers += Resolver.bintrayRepo("tmacedo", "maven")
 
 /** Déclaration de variable locale */
-val AkkaVersion = "2.5.13"
-val AkkaHttpVersion = "10.1.14"
+val AkkaVersion = "2.5.19"
+val AkkaHttpVersion = "10.1.7"
 
 /** Dépendances vers des libraires Scala ou Java */
 libraryDependencies ++= Seq(
@@ -36,7 +36,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
   "com.typesafe.akka" %% "akka-http" % AkkaHttpVersion,
 
-  /** Dépendances Spray pour gérer les JSON */
+  /** Dépendance pour gérer le logging */
+  "com.typesafe.akka" %% "akka-slf4j" % AkkaVersion,
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+
+  /** Dépendance Spray pour gérer les JSON */
   "com.typesafe.akka" %% "akka-http-spray-json" % AkkaHttpVersion,
 
   /** Dépendances dans les classes de tests */
