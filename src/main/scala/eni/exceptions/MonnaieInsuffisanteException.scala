@@ -1,6 +1,6 @@
 package eni.exceptions
 
-import eni.modeles.Produit
+import eni.modeles.machine.Produit
 
 case class MonnaieInsuffisanteException(produit: Produit, monnaie: Double) extends Exception {
 

@@ -1,6 +1,6 @@
 package eni.services
 
-import eni.modeles.Produit
+import eni.modeles.machine.Produit
 
 import scala.concurrent.Future
 

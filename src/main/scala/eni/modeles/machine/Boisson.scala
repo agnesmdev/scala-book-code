@@ -1,4 +1,4 @@
-package eni.modeles
+package eni.modeles.machine
 
 sealed trait Boisson {
   def code: String

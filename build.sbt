@@ -15,7 +15,7 @@ resolvers += Resolver.bintrayRepo("tmacedo", "maven")
 
 /** Déclaration de variable locale */
 val AkkaVersion = "2.5.13"
-val AkkaHttpVersion = "10.1.3"
+val AkkaHttpVersion = "10.1.14"
 
 /** Dépendances vers des libraires Scala ou Java */
 libraryDependencies ++= Seq(

@@ -1,4 +1,4 @@
-package eni.modeles
+package eni.modeles.machine
 
 case class EtatProduit(vendus: Int, restants: Int) {
   def acheter: EtatProduit = EtatProduit(vendus + 1, restants - 1)

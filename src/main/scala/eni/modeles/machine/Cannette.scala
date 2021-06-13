@@ -1,4 +1,4 @@
-package eni.modeles
+package eni.modeles.machine
 
 sealed trait Cannette extends Produit {
   final val prefixe: String = "C-"

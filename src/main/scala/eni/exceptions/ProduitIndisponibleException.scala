@@ -1,6 +1,6 @@
 package eni.exceptions
 
-import eni.modeles.Produit
+import eni.modeles.machine.Produit
 
 case class ProduitIndisponibleException(produit: Produit) extends Exception {
 

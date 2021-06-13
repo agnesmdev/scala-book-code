@@ -1,7 +1,8 @@
 package eni.services.impl
 
 import eni.exceptions.{MonnaieInsuffisanteException, ProduitIndisponibleException}
-import eni.modeles.{BarreEnergetique, BouteilleJus, CannetteBiere, CannetteJus, Chocolat, Reglisse}
+import eni.modeles.Reglisse
+import eni.modeles.machine.{BarreEnergetique, BouteilleJus, CannetteBiere, CannetteJus, Chocolat, Reglisse}
 import org.scalatest.GivenWhenThen
 import org.scalatest.featurespec.AsyncFeatureSpec
 

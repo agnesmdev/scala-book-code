@@ -1,4 +1,4 @@
-package eni.modeles
+package eni.modeles.machine
 
 trait Produit {
 

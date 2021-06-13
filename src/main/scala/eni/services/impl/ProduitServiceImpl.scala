@@ -1,7 +1,8 @@
 package eni.services.impl
 
 import eni.exceptions.{MonnaieInsuffisanteException, ProduitIndisponibleException}
-import eni.modeles.{EtatProduit, Produit}
+import eni.modeles.Produit
+import eni.modeles.machine.{EtatProduit, Produit}
 import eni.services.IProduitService
 
 import scala.collection.mutable

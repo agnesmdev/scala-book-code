@@ -1,4 +1,4 @@
-package eni.modeles
+package eni.modeles.machine
 
 sealed trait Friandise extends Produit {
   override val prix: Double = 1.0

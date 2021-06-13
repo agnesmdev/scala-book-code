@@ -6,8 +6,9 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives.{complete, concat, get, path, pathPrefix, _}
 import akka.stream.ActorMaterializer
 import eni.exceptions.{MonnaieInsuffisanteException, ProduitIndisponibleException}
-import eni.modeles.CommandeJsonSupport._
-import eni.modeles.{Commande, Produit}
+import eni.modeles.machine.CommandeJsonSupport._
+import eni.modeles.machine.Produit
+import eni.modeles.machine.Commande
 import eni.services.impl.ProduitServiceImpl
 
 import scala.concurrent.ExecutionContext

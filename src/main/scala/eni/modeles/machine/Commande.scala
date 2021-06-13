@@ -1,4 +1,4 @@
-package eni.modeles
+package eni.modeles.machine
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
