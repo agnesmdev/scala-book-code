@@ -2,7 +2,7 @@ package eni.services.impl
 
 import eni.exceptions.{MonnaieInsuffisanteException, ProduitIndisponibleException}
 import eni.modeles.Reglisse
-import eni.modeles.machine.{BarreEnergetique, BouteilleJus, CannetteBiere, CannetteJus, Chocolat, Reglisse}
+import eni.modeles.machine.{BarreEnergetique, BouteilleJus, CanetteBiere, CanetteJus, Chocolat, Reglisse}
 import org.scalatest.GivenWhenThen
 import org.scalatest.featurespec.AsyncFeatureSpec
 
@@ -25,7 +25,7 @@ class ProduitServiceTest extends AsyncFeatureSpec with GivenWhenThen {
   Scenario("Achat d'un produit concluant") {
     Given("Avec assez de monnaie")
     val produitService = new ProduitServiceImpl
-    val produit = CannetteBiere
+    val produit = CanetteBiere
     val monnaie = produit.prix + 1
 
     When("Achat d'un produit")
@@ -77,7 +77,7 @@ class ProduitServiceTest extends AsyncFeatureSpec with GivenWhenThen {
   Scenario("Suppression d'un produit") {
     Given("Un produit encore disponible")
     val produitService = new ProduitServiceImpl
-    val produit = CannetteJus
+    val produit = CanetteJus
 
     Given("Achat du produit avec assez d'argent")
     produitService.acheterProduit(produit, produit.prix)

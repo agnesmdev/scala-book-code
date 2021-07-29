@@ -9,6 +9,8 @@ trait Produit {
   def code: String
 
   def quantiteInitiale: Int
+
+  def etatInitial: EtatProduit = EtatProduit(0, quantiteInitiale)
 }
 
 object Produit {
@@ -16,9 +18,9 @@ object Produit {
     BouteilleEau,
     BouteilleSoda,
     BouteilleJus,
-    CannetteSoda,
-    CannetteBiere,
-    CannetteJus,
+    CanetteSoda,
+    CanetteBiere,
+    CanetteJus,
     Chocolat,
     Bonbons,
     BarreEnergetique,
@@ -29,9 +31,9 @@ object Produit {
     case BouteilleEau.code => Some(BouteilleEau)
     case BouteilleSoda.code => Some(BouteilleSoda)
     case BouteilleJus.code => Some(BouteilleJus)
-    case CannetteSoda.code => Some(CannetteSoda)
-    case CannetteBiere.code => Some(CannetteBiere)
-    case CannetteJus.code => Some(CannetteJus)
+    case CanetteSoda.code => Some(CanetteSoda)
+    case CanetteBiere.code => Some(CanetteBiere)
+    case CanetteJus.code => Some(CanetteJus)
     case Chocolat.code => Some(Chocolat)
     case Bonbons.code => Some(Bonbons)
     case BarreEnergetique.code => Some(BarreEnergetique)

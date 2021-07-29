@@ -20,6 +20,6 @@ case object BarreEnergetique extends Friandise {
 
 case object Reglisse extends Friandise {
   override val code: String = "REG"
-  override val quantiteInitiale: Int = 3
+  override val quantiteInitiale: Int = 0
 }
 
