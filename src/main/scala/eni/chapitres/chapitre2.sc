@@ -62,8 +62,41 @@ val texte = "Bonjour"
 val charactere = 'a'
 
 texte.length
+"".length
+
+texte.isEmpty
+"".isEmpty
+
+texte.isBlank
+"".isBlank
+"    ".isBlank
+
+texte.indexOf("o")
+texte.indexOf("our")
+texte.indexOf("o", 3)
+texte.indexOf("a")
+texte.contains("jour")
+
 texte.replace("o", "0")
+texte.replace("a", "A")
+texte.replaceFirst("o", "0")
+
+texte.split("o")
+texte.split("a")
+
+texte.substring(3, 6)
+/*
+texte.substring(3, 9)
+// java.lang.StringIndexOutOfBoundsException: begin 3, end 9, length 7
+ */
+
+"   Texte    ".trim
+
+texte.startsWith("Bon")
 texte.endsWith("jour")
+
+texte.toLowerCase
+texte.toUpperCase
 
 /** 2.5.1. Interpolation de String */
 
@@ -174,20 +207,6 @@ val mauvaiseReponse = false
 bonneReponse & mauvaiseReponse
 bonneReponse | mauvaiseReponse
 
-val phraseJava = new String("Comment vas-tu ?")
-val memePhraseJava = new String("Comment vas-tu ?")
-phraseJava == memePhraseJava
-phraseJava equals memePhraseJava
-phraseJava eq memePhraseJava
-
-val valeurNulle: String = null
-valeurNulle == null
-/*
-valeurNulle equals null
-// java.lang.NullPointerException
-  ... 37 elided
- */
-
 /** 2.8. Éléments temporels */
 /** 2.8.1. Period */
 
@@ -257,6 +276,10 @@ LocalDate.now(zoneParDefaut)
 val dateLocaleAvecZone = LocalDate.now(ZoneId.of("GMT+9"))
 ZoneId.getAvailableZoneIds
 
+s"""${dateLocale.getYear} années,
+   |${dateLocale.getMonthValue} mois,
+   |${dateLocale.getDayOfMonth} jours"""
+
 dateLocale.plusDays(3)
 dateLocale.plus(2, ChronoUnit.MONTHS)
 
@@ -270,7 +293,6 @@ val dateLocaleAjoutee = dateLocale
 dateLocale.plus(periode)
 
 val periodeEntreDates = Period.between(dateLocale, dateLocaleAjoutee)
-s"${periodeEntreDates.getYears} années, ${periodeEntreDates.getMonths} mois, ${periodeEntreDates.getDays} jours"
 
 dateLocale.isAfter(dateLocaleAjoutee)
 dateLocale.isBefore(dateLocaleAjoutee)
@@ -296,6 +318,13 @@ LocalDate.parse("2015 01 27", formateurDateLocale)
 
 val dateTempsLocale = LocalDateTime.now()
 val dateTempsLocalAvecZone = LocalDateTime.now(ZoneId.of("GMT+9"))
+
+s"""${dateTempsLocale.getYear} années,
+   |${dateTempsLocale.getMonthValue} mois,
+   |${dateTempsLocale.getDayOfMonth} jours,
+   |${dateTempsLocale.getHour} heures,
+   |${dateTempsLocale.getMinute} minutes,
+   |${dateTempsLocale.getSecond} secondes"""
 
 dateTempsLocale.plusHours(7)
 dateTempsLocale.plus(2, ChronoUnit.SECONDS)
@@ -484,12 +513,8 @@ hashMap -= "orange" -= "noir"
 hashMap -= "magenta"
 
 hashMap.remove("mauve")
+hashMap
 hashMap.remove("kaki")
-hashMap
-
-hashMap.update("vert", 8)
-hashMap.update("lavande", 2)
-hashMap
 
 hashMap.put("rose", 7)
 hashMap.put("cyan", 3)
@@ -669,13 +694,19 @@ shorts.nombre
 /** 6.3. Champs supplémentaires */
 
 class Maison(val chambres: Int, val lieu: String) {
-  val description = s"Maison à $lieu avec $chambres chambres"
+  private val descriptionCourte = s"Maison à $lieu"
+  val description = s"$descriptionCourte avec $chambres chambres"
   var superficie = chambres * 20
 }
 
 val maison = new Maison(3, "Nantes")
 maison.description
 maison.superficie
+
+/*
+maison.descriptionCourte
+// value descriptionCourte in class Maison cannot be accessed in Maison
+ */
 
 maison.superficie = 100
 maison.superficie
@@ -721,6 +752,10 @@ article.contenu
 article.contenu == articleListe.contenu
 article.contenu == articleCouple.contenu
 
+article == articleListe
+article == articleCouple
+articleListe == articleCouple
+
 /** 7. Héritage */
 /** 7.1. Définition */
 
@@ -729,6 +764,7 @@ class Appartement(lieu: String) extends Maison(1, lieu)
 val appartement = new Appartement("Lyon")
 appartement.lieu
 appartement.description
+appartement.chambres
 
 appartement.isInstanceOf[Appartement]
 appartement.isInstanceOf[Maison]
@@ -739,7 +775,6 @@ val appartementMaison: Maison = appartement
 val maisonAppartement: Appartement = maison
 // found   : Maison
 // required: Appartement
-// val maisonAppartement: Appartement = maison
  */
 
 /** 7.2. Champs / méthodes protected */
@@ -774,14 +809,6 @@ class Dictionnaire(titre: String, pages: Int) extends Livre(titre, pages) {
 val dictionnaire = new Dictionnaire("Synonymes", 630)
 dictionnaire.taille
 
-/*
-// SOLUTION EXERCICE 1
-
-class Trilogie(livre1: String, livre2: String, livre3: String, pages: Int) extends Livre(s"$livre1 - $livre2 - $livre3", pages * 3) {
-  override val epaisseur: Int = pages * 30
-}
- */
-
 /** 7.3. Surcharger les méthodes / champs */
 
 class Villa(chambres: Int, lieu: String) extends Maison(chambres, lieu) {
@@ -811,16 +838,20 @@ class GrandChalet(chambres: Int, lieu: String) extends Chalet(chambres, lieu) {
 // method prix cannot override final member
  */
 
+final class Hotel(chambres: Int, lieu: String) extends Maison(chambres, lieu)
+
+/*
+class HotelDeluxe(chambres: Int, lieu: String) extends Hotel(chambres, lieu)
+// illegal inheritance from final class Hotel
+ */
+
 /** 8. Objets singletons */
 /** 8.1. Définition */
 
 object Compteur {
   val nom = "COMPTEUR"
-
   private var total = 0
-
   def decompte = total
-
   def ajouter = total += 1
 }
 
@@ -832,13 +863,16 @@ Compteur.nom
 // Error: variable total in object Compteur cannot be accessed in object Compteur
  */
 
-Math.min(1, 5)
+Random.nextInt()
 
-/*import Math.sqrt
-sqrt(16)
+import Random.nextDouble
+nextDouble()
 
-import Math._
-max(90, 23)*/
+import Random._
+nextLong()
+
+/** 8.2. Objets companions */
+/** 8.2.1. Définition */
 
 class Carre(longueur: Int) {
   def aire: Double = Carre.calculerAire(longueur)
@@ -851,7 +885,12 @@ object Carre {
 val carre = new Carre(15)
 carre.aire
 
-// Carre.calculerAire(15)
+/*
+Carre.calculerAire(15)
+// Error: value calculerAire is not a member of object Carre
+ */
+
+/** 8.2.2. Création de nouveaux constructeurs */
 
 class Paragraphe(val contenu: String) {
   override def toString: String = contenu

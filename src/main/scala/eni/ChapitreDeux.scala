@@ -30,7 +30,7 @@ object ChapitreDeux {
     if (indexAge >= 0) {
       println(s"La personne ${GREEN}#${indexAge + 1}$RESET a le même âge que vous !")
     } else {
-      println(s"${RED}${BOLD}Personne n'a votre âge !$RESET")
+      System.err.println(s"${RED}${BOLD}Personne n'a votre âge !$RESET")
     }
 
     val moyenne: BigDecimal = total.toDouble / nombre
