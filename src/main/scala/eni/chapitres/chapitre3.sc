@@ -1,8 +1,12 @@
 import java.time.LocalDate
 import java.util.concurrent.Executors
-import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Random, Success, Try}
+import java.net.{URI, UnknownHostException}
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
+import scala.util.matching.Regex
+import scala.concurrent.duration._
 
 /** 1. Fonctions */
 /** 1.1. Définition */
@@ -44,6 +48,7 @@ val doubleFonction = (f: Int => Double, e: Int) => f(e) * 2
 
 doubleFonction(fonctionUnArg, 12)
 doubleFonction(_ * 5, 42)
+doubleFonction(x => fonctionDeuxArg(x, 3.5), 12)
 doubleFonction(fonctionDeuxArg(_, 3.5), 12)
 
 /** 1.6. Fonctions récursives */
@@ -69,20 +74,17 @@ val exemple = "exemple"
 exemple.length
 exemple.substring(4)
 
-import java.net.{URI, UnknownHostException}
-import scala.collection.mutable.ArrayBuffer
-import scala.io.Source
-
 var animals: ArrayBuffer[String] = ArrayBuffer.empty[String]
 
-def addAnimal(animal: String): ArrayBuffer[String] = {
+def ajouterAnimal(animal: String): ArrayBuffer[String] = {
   animals += animal
 }
 
-addAnimal("chat")
-addAnimal("chien")
+ajouterAnimal("chat")
+ajouterAnimal("chien")
 
 /** 3. Trait */
+
 /** 3.2. Étendre un trait */
 
 trait Animal {
@@ -134,6 +136,13 @@ tom.son()
 tom.imprimeSon()
 tom.nom
 
+/** 3.4. Traits scellé */
+
+/*
+class Visseuse extends Outil
+// illegal inheritance from sealed trait Outil
+ */
+
 /** 3.4. Classes abstraites */
 
 abstract class ClasseAmi(nom: String)
@@ -147,18 +156,19 @@ class Labrador(nomDuChien: String) extends Chien with Ami {
 }
 
 /** 4. Classes abstraites */
+
 /** 4.1. Définition */
 
 abstract class ClasseCouleur
 
-case class CouleurPleine(name: String) extends ClasseCouleur
+case class CouleurPleine(nom: String) extends ClasseCouleur
 
 val couleur = CouleurPleine("rouge")
-couleur.name
+couleur.nom
 
 println(couleur)
 
-class CouleurMonochrome(name: String) extends ClasseCouleur
+class CouleurMonochrome(nom: String) extends ClasseCouleur
 
 val couleurMonochrome = new CouleurMonochrome("gris")
 
@@ -169,7 +179,7 @@ couleurMonochrome == new CouleurMonochrome("gris")
 
 /** 4.2. Méthode copy */
 
-val couleurBlue = couleur.copy(name = "bleu")
+val couleurBlue = couleur.copy(nom = "bleu")
 
 /*
 // SOLUTION EXERCICE 1
@@ -202,6 +212,7 @@ case object Noir extends CouleurBasique
 println(Bleu)
 
 /** 6. Pattern matching */
+
 /** 6.2. Pattern constructeurs */
 
 case class Mixte(couleurA: CouleurBasique, couleurB: CouleurBasique) extends Couleur
@@ -324,31 +335,6 @@ def simplifierMixte(couleur: Mixte) = couleur match {
 simplifierMixte(Mixte(Blanc, Blanc))
 simplifierMixte(Mixte(Bleu, Rouge))
 
-/*
-// SOLUTION EXERCICE 2
-
-def tombola(value: Any) = value match {
-  case "BINGO" => true
-  case s: String if s.length > 5 => true
-  case s: String => false
-  case i: Int if i % 2 == 0 => true
-  case i: Int => false
-  case Seq(_, _, _) => true
-  case l: Seq[Any] => false
-  case (a, b) => true
-  case _ => false
-}
-
-// version simplifiée
-def tombola(value: Any) = value match {
-  case "BINGO" => true
-  case s: String if s.length > 5 => true
-  case i: Int if i % 2 == 0 => true
-  case Seq(_, _, _) => true
-  case _ => false
-}
- */
-
 /** 7. Option */
 /** 7.1. Définition */
 
@@ -386,22 +372,43 @@ def demoOptionType(valeur: Any) = valeur match {
 demoOptionType(Some(34))
 demoOptionType(Some("Lorem Ipsum"))
 
-/** 7.3. Méthodes utilitaires */
-
-optionDefinie.getOrElse()
-
-/** 7.4. Bonnes pratiques */
+/** 7.3. Bonnes pratiques */
 
 val valeurNulle: String = null
 val optionNulle = Option(valeurNulle)
 
-/** 8. Fonctions communes aux séquences */
+/** 8. Expressions régulières */
 
-val nombres = Seq(2, 3, 5, 8, 13, 21)
-val singleton = Seq(65)
-val listeVide: Seq[Int] = Nil
+val motDePasse = "M0tD3p4ss3"
+val regex = new Regex("\\d\\w")
 
-/** 8.6. head */
+regex.findFirstIn(motDePasse)
+val occurrences = regex.findAllIn(motDePasse)
+occurrences.toList
+regex.replaceFirstIn(motDePasse, " ")
+regex.replaceFirstIn("MotDePasse", " ")
+regex.replaceAllIn(motDePasse, " ")
+regex.replaceAllIn("MotDePasse", " ")
+
+val regexQuestion = """Combien de (\w+) a-t-(il|elle) \? (\d+)""".r
+
+def extraireReponse(phrase: String) = phrase match {
+  case regexQuestion(element, personne, nombre) => s"${personne.capitalize} a $nombre $element"
+  case _ => "Pas de réponse"
+}
+
+extraireReponse("Combien de tables a-t-il ? 6")
+extraireReponse("Combien de tableaux a-t-elle ? 2")
+extraireReponse("Combien de casques audio a-t-elle ? 5")
+
+/** 9. Fonctions communes aux collections */
+
+val nombres = List(2, 3, 5, 8, 13, 21)
+val singleton = List(65)
+val listeVide: List[Int] = Nil
+
+/** 9.1. Accès aux éléments d'une collection */
+/** 9.1.1. head */
 
 nombres.head
 /*
@@ -412,7 +419,7 @@ listeVide.head
 nombres.headOption
 listeVide.headOption
 
-/** 8.7. tail */
+/** 9.1.2. tail */
 
 nombres.tail
 singleton.tail
@@ -421,7 +428,7 @@ Nil.tail
 // java.lang.UnsupportedOperationException: tail of empty list
  */
 
-def queue(sequence: Seq[Any]) = sequence match {
+def queue(sequence: List[Any]) = sequence match {
   case _ :: tail => tail
   case _ => Nil
 }
@@ -429,15 +436,27 @@ def queue(sequence: Seq[Any]) = sequence match {
 queue(nombres)
 queue(Nil)
 
-/** 8.1. map */
+/** 9.1.3. exists */
+
+nombres.exists(_ < 5)
+listeVide.exists(_ < 5)
+
+/** 9.1.4. find */
+
+nombres.find(_ < 10)
+nombres.find(_ > 30)
+listeVide.find(_ > 30)
+
+/** 9.2. Transformation de collection */
+/** 9.2.1. map */
 
 nombres.map(_ * 2)
 nombres.map(_.toString)
 listeVide.map(_.toString)
 
-/** 8.1. flatMap */
+/** 9.2.2. flatMap */
 
-def diviseurs(nombre: Int): Seq[Int] = {
+def diviseurs(nombre: Int) = {
   (2 until nombre).filter(i => nombre % i == 0)
 }
 val diviseursNombres = nombres.map(diviseurs)
@@ -445,84 +464,32 @@ nombres.flatMap(diviseurs)
 
 diviseursNombres.flatten
 
-/** 8.2. exists */
-
-nombres.exists(_ < 5)
-listeVide.exists(_ < 5)
-
-/** 8.4. forall */
-
-nombres.forall(_ < 5)
-listeVide.forall(_ < 5)
-
-/** 8.3. filter */
+/** 9.2.3. filter */
 
 nombres.filter(_ < 10)
 nombres.filter(_ > 30)
 listeVide.filter(_ > 30)
 
-/** 8.4. collect */
+/** 9.2.4. collect */
 
 nombres.collect {
   case nombre if nombre < 10 => nombre * 1.5
   case nombre if nombre > 20 => nombre / 2
 }
 
-/** 8.4. fold */
-
-nombres.fold(0) {
-  case (resultat, nombre) if nombre % 2 == 0 => resultat + nombre
-  case (resultat, _) => resultat
-}
-
-/** 8.4. foldLeft / foldRight */
-
-nombres.foldLeft("") {
-  case (resultat, nombre) if nombre % 2 == 1 => resultat ++ nombre.toString
-  case (resultat, _) => resultat
-}
-
-nombres.foldRight("") {
-  case (nombre, resultat) if nombre % 2 == 1 => resultat ++ nombre.toString
-  case (_, resultat) => resultat
-}
-
-nombres.reverse.foldRight("") {
-  case (nombre, resultat) if nombre % 2 == 1 => resultat ++ nombre.toString
-  case (_, resultat) => resultat
-}
-
-/** 8.4. foreach */
-
-nombres.foreach(print(_))
-listeVide.foreach(print(_))
-
-/** 8.5. mkString */
-
-nombres.mkString(" - ")
-singleton.mkString(" - ")
-nombres.mkString("(", " - ", ")")
-listeVide.mkString("(", " - ", ")")
-nombres.mkString
-listeVide.mkString
-
-/** 8.6. sum */
-
-nombres.sum
-
-/** 8.8. takeWhite */
+/** 9.2.5. takeWhile */
 
 nombres.takeWhile(_ % 2 == 0)
 nombres.takeWhile(_ % 3 == 0)
 listeVide.takeWhile(_ % 3 == 0)
 
-/** 8.9. dropWhile */
+/** 9.2.6. dropWhile */
 
 nombres.dropWhile(_ % 2 == 0)
 nombres.dropWhile(_ % 3 == 0)
 listeVide.dropWhile(_ % 3 == 0)
 
-/** 8.10. sorted */
+/** 9.2.7. sorted */
 
 val mots = List("crayon", "livre", "coquelicot", "ane", "joue")
 mots.sorted
@@ -541,16 +508,16 @@ dates.sorted
 implicit val ordreDate: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
 dates.sorted
 
-/** 8.10. sortBy */
+/** 9.2.8. sortBy */
 
 mots.sortBy(_.length)
 dates.sortBy(_.toEpochDay)
 
-/** 8.10. sortWith */
+/** 9.2.9. sortWith */
 
 mots.sortWith((mot1, mot2) => mot1.last > mot2.last)
 
-/** 8.10. zipWithIndex */
+/** 9.2.10. zipWithIndex */
 
 val motsIndexes = mots.zipWithIndex
 motsIndexes.map {
@@ -558,18 +525,66 @@ motsIndexes.map {
   case (mot, _) => mot
 }
 
-/** 8.10. grouped */
+/** 9.2.11. grouped */
 
 val motsGroupes = mots.grouped(2)
 motsGroupes.toList
 mots.grouped(6).toList
 
-/** 8.10. groupBy */
+/** 9.2.12. groupBy */
 
 mots.groupBy(_.length)
 
-/** 9. Gestion des erreurs */
-/** 9.1. try / catch / finally */
+/** 9.3. Opération sur une collection */
+/** 9.3.1. foreach */
+
+nombres.foreach(print(_))
+listeVide.foreach(print(_))
+
+/** 9.3.2. mkString */
+
+nombres.mkString(" - ")
+singleton.mkString(" - ")
+nombres.mkString("(", " - ", ")")
+listeVide.mkString("(", " - ", ")")
+nombres.mkString
+listeVide.mkString
+
+/** 9.3.3. forall */
+
+nombres.forall(_ < 5)
+listeVide.forall(_ < 5)
+
+/** 9.3.4. fold */
+
+nombres.fold(0) {
+  case (resultat, nombre) if nombre % 2 == 0 => resultat + nombre
+  case (resultat, _) => resultat
+}
+
+/** 9.3.5. foldLeft / foldRight */
+
+nombres.foldLeft("") {
+  case (resultat, nombre) if nombre % 2 == 1 => resultat ++ nombre.toString
+  case (resultat, _) => resultat
+}
+
+nombres.foldRight("") {
+  case (nombre, resultat) if nombre % 2 == 1 => resultat ++ nombre.toString
+  case (_, resultat) => resultat
+}
+
+nombres.reverse.foldRight("") {
+  case (nombre, resultat) if nombre % 2 == 1 => resultat ++ nombre.toString
+  case (_, resultat) => resultat
+}
+
+/** 9.3.6. sum */
+
+nombres.sum
+
+/** 10. Gestion des erreurs */
+/** 10.1. try / catch / finally */
 
 def imprimeSite(url: String) = {
   var contenuDuSite = ""
@@ -592,7 +607,7 @@ imprimeSite(null)
 // java.lang.NullPointerException
  */
 
-/** 9.2. Option */
+/** 10.2. Option */
 
 /*
 "string".toInt
@@ -609,7 +624,7 @@ def stringEnInt(s: String): Option[Int] = {
 
 stringEnInt("string")
 
-/** 9.3. Either */
+/** 10.3. Either */
 
 def racineCarree(i: Int): Either[String, Int] = {
   Math.sqrt(i) match {
@@ -631,7 +646,7 @@ def imprimeRacineCarree(i: Int) = {
 imprimeRacineCarree(16)
 imprimeRacineCarree(12)
 
-/** 9.4. Try */
+/** 10.4. Try */
 
 def stringEnDouble(s: String): Try[Double] = {
   Try(s.toDouble)
@@ -655,8 +670,8 @@ def imprimeStringEnDouble(s: String) = {
 imprimeStringEnDouble("1.5")
 imprimeStringEnDouble("1 5")
 
-/** 9.5. For compréhension */
-/** 9.5.1. Option */
+/** 10.5. For compréhension */
+/** 10.5.1. Option */
 
 def sommeStringEnInt(s: String, t: String): Option[Int] = {
   for {
@@ -670,7 +685,36 @@ def sommeStringEnInt(s: String, t: String): Option[Int] = {
 sommeStringEnInt("1", "3")
 sommeStringEnInt("1", "trois")
 
-/** 9.5.2. Either */
+/** 10.5.2. Collection */
+
+def sommeStringEtInt(listeString: List[String], listeInt: List[Int]) = {
+  for {
+    i <- listeInt
+    s <- listeString
+  } yield {
+    s"$i : $s"
+  }
+}
+
+val listeString = List("Un", "Deux", "Trois")
+val listeInt = List(1, 2)
+sommeStringEtInt(listeString, listeInt)
+
+def stringParTaille(listeString: List[String], listeInt: List[Int]) = {
+  for {
+    i <- listeInt
+    s <- listeString if s.length == i
+  } yield {
+    s"$i : $s"
+  }
+}
+
+val tailles = List(2, 4, 5)
+stringParTaille(listeString, tailles)
+stringParTaille(listeString, listeVide)
+stringParTaille(Nil, tailles)
+
+/** 10.5.3. Either */
 
 def sommeRacineCarree(i: Int, j: Int): Either[String, Int] = {
   for {
@@ -684,7 +728,7 @@ def sommeRacineCarree(i: Int, j: Int): Either[String, Int] = {
 sommeRacineCarree(1, 16)
 sommeRacineCarree(1, 3)
 
-/** 9.5.3. Try */
+/** 10.5.4. Try */
 
 def sommeStringEnDouble(s: String, t: String): Try[Double] = {
   for {
@@ -698,37 +742,8 @@ def sommeStringEnDouble(s: String, t: String): Try[Double] = {
 sommeStringEnDouble("1.5", "3.9")
 sommeStringEnDouble("1.5", "3 9")
 
-/** 9.5.3. List */
-
-def sommeStringEtInt(listeString: Seq[String], listeInt: Seq[Int]) = {
-  for {
-    i <- listeInt
-    s <- listeString
-  } yield {
-    s"$i : $s"
-  }
-}
-
-val listeString = Seq("Un", "Deux", "Trois")
-val listeInt = Seq(1, 2)
-sommeStringEtInt(listeString, listeInt)
-
-def stringParTaille(listeString: Seq[String], listeInt: Seq[Int]) = {
-  for {
-    i <- listeInt
-    s <- listeString if s.length == i
-  } yield {
-    s"$i : $s"
-  }
-}
-
-val tailles = Seq(2, 4, 5)
-stringParTaille(listeString, tailles)
-stringParTaille(listeString, listeVide)
-stringParTaille(Nil, tailles)
-
-/** 10. Future */
-/** 10.1. Définition */
+/** 11. Future */
+/** 11.1. Définition */
 
 implicit val executor: ExecutionContext = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
 
@@ -753,21 +768,18 @@ Future.successful(throw new Exception("Échec..."))
 // java.lang.Exception: Échec...
  */
 
-/** 10.2. Fonctions liées aux Future */
-/** 10.2.1. andThen */
+/** 11.2. Fonctions liées aux Future */
+/** 11.2.1. andThen */
 
 def imprimeFuture(future: Future[Any]) = future.andThen {
   case Success(resultat) => println(s"Succès : $resultat")
   case Failure(e) => println(s"Échec : $e")
 }
 
-val imprimeSucces = imprimeFuture(futureSucces)
-val imprimeEchec = imprimeFuture(futureEchec)
+imprimeFuture(futureSucces)
+imprimeFuture(futureEchec)
 
-imprimeSucces
-imprimeEchec
-
-/** 10.2.2. recover */
+/** 11.2.2. recover */
 
 def recupereErreur(future: Future[String]) = future.recover {
   case _: NullPointerException => throw new Exception("Erreur !")
@@ -784,12 +796,12 @@ recupereSucces
 recupereErreurClassique
 recupereErreurNpe
 
-/** 10.2.3. map */
+/** 11.2.3. map */
 
 val resultatDouble = resultat.map(_ * 2)
 resultatDouble
 
-/** 10.2. Pattern matching */
+/** 11.3. Pattern matching */
 
 val tacheTriple = for {
   x <- tacheLongue()
@@ -801,3 +813,94 @@ val tacheTriple = for {
 
 Thread.sleep(30000)
 tacheTriple
+
+/** 12. Implicites */
+/** 12.1. Paramètres implicites */
+
+val liste = List("blanc", "azur", "pourpre", "violet")
+liste.sorted
+
+implicit val ordre: Ordering[String] = Ordering.by(_.length)
+liste.sorted
+
+liste.sorted(Ordering.String)
+
+/** 12.2. Conversions implicites */
+/** 12.2.1. Changer le type d'un élément */
+
+val i: Long = 1
+/*
+val j: Int = 1L
+// // Type mismatch
+ */
+
+implicit def longVersInt(i: Long): Int = i.toInt
+val j: Int = 1L
+
+/** 12.2.2. Utiliser une méthode d'un autre type */
+
+val k: Int = 100000
+
+/*
+k.length
+// Error: value length is not a member of Int
+ */
+
+implicit def intVersString(i: Int): String = i.toString
+k.length
+
+/** 12.3. Classes implicites */
+
+val paire = (123, 345)
+/*
+paire.min
+// Error: value min is not a member of (Int, Int)
+ */
+
+implicit class MinInt(paire: (Int, Int)) {
+  def min: Int = Math.min(paire._1, paire._2)
+}
+
+paire.min
+
+/** 12.4. Règles */
+/** 12.4.1. Le mot clé implicit */
+
+def stringVersInt(s: String): Int = s.toInt
+/*
+val s: Int = "123"
+// Error: type mismatch;
+ */
+
+/** 12.4.2. La portée d’un implicit */
+
+1.seconds
+
+/** 12.4.3. Un implicit par conversion */
+
+/*
+implicit val ordreInverse: Ordering[String] = ordre.reverse
+liste.sorted
+// Error: ambiguous implicit values:
+// both value ordre of type => Ordering[String]
+// and value ordreInverse of type => Ordering[String]
+// match expected type scala.math.Ordering[String]
+ */
+
+/** 12.4.4. Une seule conversion à la fois */
+
+/*
+val m: String = 123L
+// Error:(37, 17) type mismatch;
+// found   : Long(123L)
+// required: String
+ */
+
+def bonjour(implicit s: String): String = s"Bonjour $s"
+implicit val nombre: Int = 123
+
+/** 12.4.5. Priorité aux non-implicites */
+
+implicit val s: String = "Marie"
+bonjour
+bonjour("Jean")

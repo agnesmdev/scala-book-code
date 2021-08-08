@@ -10,7 +10,7 @@ trait Produit {
 
   def quantiteInitiale: Int
 
-  def etatInitial: EtatProduit = EtatProduit(0, quantiteInitiale)
+  final def etatInitial: EtatProduit = EtatProduit(0, quantiteInitiale)
 }
 
 object Produit {
