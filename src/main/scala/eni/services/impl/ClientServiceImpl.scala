@@ -2,30 +2,48 @@ package eni.services.impl
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpRequest, StatusCodes}
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, RawHeader}
 import akka.http.scaladsl.unmarshalling.Unmarshal
-import akka.stream.Materializer
 import com.typesafe.config.ConfigFactory
-import eni.modeles.client.ClientJsonSupport._
-import eni.modeles.client.Utilisateur
+import eni.modeles.client.{ClientJsonSupport, Evaluation, Utilisateur}
 import eni.services.IClientService
-import org.slf4j.LoggerFactory
+import spray.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ClientServiceImpl extends IClientService {
+class ClientServiceImpl(implicit system: ActorSystem, executor: ExecutionContext) extends IClientService with ClientJsonSupport {
 
-  private val host: String = ConfigFactory.load().getString("api.placeholder.host")
-  private val logger = LoggerFactory.getLogger(getClass.getName)
+  private val hote: String = ConfigFactory.load().getString("api.hote")
+  private val utilisateur: String = ConfigFactory.load().getString("api.utilisateur")
+  private val motDePasse: String = ConfigFactory.load().getString("api.motDePasse")
+  private val http = Http()
 
-  override def rechercheUtilisateurs(nom: String)(implicit system: ActorSystem, mat: Materializer, executor: ExecutionContext): Future[List[Utilisateur]] = {
-    logger.debug(s"Recherche d'utilisateurs contenant le nom '$nom' vers le host '$host'")
-    val request = HttpRequest(uri = s"$host/users")
-    Http().singleRequest(request).flatMap {
-        case response if response.status != StatusCodes.OK => Future.failed(new Throwable(s"Code ${response.status}"))
-        case response =>
-          val futureUtilisateurs = Unmarshal(response).to[List[Utilisateur]]
-          futureUtilisateurs.map(_.filter(_.name.toLowerCase.contains(nom)))
-      }
+  override def rechercheEvaluationsUtilisateur(id: Int): Future[List[Evaluation]] = {
+    val request = HttpRequest(
+      uri = s"$hote/utilisateurs/$id/evaluations",
+      headers = List(Authorization(BasicHttpCredentials(utilisateur, motDePasse)))
+    )
+    http.singleRequest(request).flatMap {
+      case response if response.status != StatusCodes.OK => Future.failed(new Throwable(s"Code ${response.status}"))
+      case response => Unmarshal(response).to[List[Evaluation]]
+    }.recover {
+      case ex => throw new Throwable(s"Problème de connexion à l'hôte : ${ex.getMessage}")
+    }
+  }
+
+  override def ajoutUtilisateur(utilisateurACreer: Utilisateur): Future[Utilisateur] = {
+    val request = HttpRequest(
+      uri = s"$hote/utilisateurs",
+      method = HttpMethods.POST,
+      headers = List(RawHeader("utilisateur", utilisateur), RawHeader("motDePasse", motDePasse)),
+      entity = HttpEntity(ContentTypes.`application/json`, utilisateurACreer.toJson.toString())
+    )
+    http.singleRequest(request).flatMap {
+      case response if response.status != StatusCodes.Created => Future.failed(new Throwable(s"Code ${response.status}"))
+      case response => Unmarshal(response).to[Utilisateur]
+    }.recover {
+      case ex => throw new Throwable(s"Problème de connexion à l'hôte : ${ex.getMessage}")
+    }
   }
 }

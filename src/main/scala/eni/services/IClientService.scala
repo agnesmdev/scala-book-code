@@ -1,12 +1,12 @@
 package eni.services
 
-import akka.actor.ActorSystem
-import akka.stream.Materializer
-import eni.modeles.client.Utilisateur
+import eni.modeles.client.{Evaluation, Utilisateur}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait IClientService {
 
-  def rechercheUtilisateurs(nom: String)(implicit system: ActorSystem, mat: Materializer, executor: ExecutionContext): Future[List[Utilisateur]]
+  def rechercheEvaluationsUtilisateur(id: Int): Future[List[Evaluation]]
+
+  def ajoutUtilisateur(utilisateur: Utilisateur): Future[Utilisateur]
 }

@@ -47,6 +47,9 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-config" % "0.8.0",
   "io.circe" %% "circe-generic" % "0.14.1",
 
+  /** Dépendance pour effectuer le hashage */
+  "javax.xml.bind" % "jaxb-api" % "2.3.1",
+
   /** Dépendances dans les classes de tests */
   "org.scalatest" %% "scalatest" % "3.2.9" % Test
 )

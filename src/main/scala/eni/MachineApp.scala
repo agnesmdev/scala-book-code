@@ -71,7 +71,7 @@ object MachineApp extends App {
         case None => reject(ValidationRejection(s"Code $code inconnu"))
         case Some(produit) =>
           val montant = produitService.supprimerProduit(produit)
-          complete(s"Produit $produit retiré de la machine, $montant rapporté grâce à ce produit")
+          complete(StatusCodes.NoContent, s"Produit $produit retiré de la machine, $montant rapporté grâce à ce produit")
       }
     }
   }
