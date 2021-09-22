@@ -14,7 +14,7 @@ version := "1.0.0"
 resolvers += Resolver.bintrayRepo("tmacedo", "maven")
 
 /** Déclaration de variable locale */
-val AkkaVersion = "2.6.15"
+val AkkaVersion = "2.6.16"
 val AkkaHttpVersion = "10.2.6"
 
 /** Dépendances vers des libraires Scala ou Java */
@@ -49,6 +49,11 @@ libraryDependencies ++= Seq(
 
   /** Dépendance pour effectuer le hashage */
   "javax.xml.bind" % "jaxb-api" % "2.3.1",
+
+  /** Dépendances pour les bases de données */
+  "com.typesafe.slick" %% "slick" % "3.3.3",
+  "com.typesafe.slick" %% "slick-hikaricp" % "3.3.3",
+  "com.h2database" % "h2" % "1.4.200",
 
   /** Dépendances dans les classes de tests */
   "org.scalatest" %% "scalatest" % "3.2.9" % Test

@@ -1,7 +1,6 @@
 package eni.services.impl
 
 import eni.exceptions.{MonnaieInsuffisanteException, ProduitIndisponibleException}
-import eni.modeles.Reglisse
 import eni.modeles.machine.{BarreEnergetique, BouteilleJus, CanetteBiere, CanetteJus, Chocolat, Reglisse}
 import org.scalatest.GivenWhenThen
 import org.scalatest.featurespec.AsyncFeatureSpec
@@ -19,7 +18,7 @@ class ProduitServiceTest extends AsyncFeatureSpec with GivenWhenThen {
     assert(produitService.total() == 0.0)
 
     Then("Il reste encore 10 produits")
-    assert(produitService.produitsRestants(produit) == produit.quantiteInitiale)
+    assert(produitService.produitsRestants(produit).restants == produit.quantiteInitiale)
   }
 
   Scenario("Achat d'un produit concluant") {
@@ -36,8 +35,8 @@ class ProduitServiceTest extends AsyncFeatureSpec with GivenWhenThen {
       assert(reste == 1.0)
 
       Then("Il reste un produit en moins")
-      val restants = produitService.produitsRestants(produit)
-      assert(restants == produit.quantiteInitiale - 1)
+      val etatProduit = produitService.produitsRestants(produit)
+      assert(etatProduit.restants == produit.quantiteInitiale - 1)
 
       Then("Le total est mis à jour")
       val total = produitService.total()
@@ -89,8 +88,8 @@ class ProduitServiceTest extends AsyncFeatureSpec with GivenWhenThen {
     assert(resultat == 1.0)
 
     Then("Le produit n'est plus disponible")
-    val restants = produitService.produitsRestants(produit)
-    assert(restants == 0)
+    val etatProduit = produitService.produitsRestants(produit)
+    assert(etatProduit.restants == 0)
   }
 
   Scenario("Ajout d'un produit") {
@@ -102,7 +101,7 @@ class ProduitServiceTest extends AsyncFeatureSpec with GivenWhenThen {
     val resultat = produitService.ajouterProduit(produit, 5)
 
     Then("Il reste 10 produits")
-    val restants = produitService.produitsRestants(produit)
-    assert(restants == produit.quantiteInitiale + 5)
+    val etatProduit = produitService.produitsRestants(produit)
+    assert(etatProduit.restants == produit.quantiteInitiale + 5)
   }
 }
