@@ -522,6 +522,7 @@ hashMap
 
 /** 2.9.10. Fonctions communes */
 
+sequence
 sequence(2)
 /*
 sequence(3)

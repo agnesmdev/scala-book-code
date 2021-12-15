@@ -4,7 +4,6 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives.{complete, concat, _}
-import akka.stream.{ActorMaterializer, Materializer}
 import eni.modeles.client.{ClientJsonSupport, Utilisateur}
 import eni.services.impl.ClientServiceImpl
 
